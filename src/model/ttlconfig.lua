@@ -1,30 +1,14 @@
-local m, s, o
-m = Map("ttl", translate("Antitethering Config"))
+module("luci.model.cbi.ttlconfig", package.seeall)
 
-s = m:section(TypedSection, "ttl", translate("TTL antitether"))
-s.anonymous = true
-s.addremove = true
+function ttl_config()
+    local map = Map("ttl", "TTL Configuration")
 
-o = s:option(Value, "iface", translate("Set interface"))
+    local section = map:section(TypedSection, "ttl", "Configure TTL Values")
+    section.anonymous = true
+    section.addremove = true
 
-o = s:option(Flag, "advanced", translate("Advanced Option"))
-o.default = '0'
-o.rmempty = false
-
-o = s:option(ListValue, "inet", translate("Inet Family"))
-o:value("ipv4", "IPv4")
-o:value("ipv6", "IPv6")
-o:value("ipv4v6", translate("Both"))
-o.rmempty = true
-o.editable = true
-o:depends("advanced", "1")
-
-o = s:option(Value, "ttl", translate("TTL Value"))
-o:value("64", "64")
-o:value("128", "128")
-o.default = "64"
-o.rmempty = true
-o.editable = true
-o:depends("advanced", "1")
-
-return m
+    section:option(Value, "ttl_value", "TTL Value", "Set TTL value (range: 1-255)"):value("64")
+    section:option(Value, "iface", "Interface", "Select the interface to apply TTL"):value("eth0")
+    
+    return map
+end
