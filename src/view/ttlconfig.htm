@@ -1,14 +1,41 @@
-<%+header%>
-<h2>TTL Configuration</h2>
 
-<p>Current Active TTL Value: <%= ttl_value %></p>
+    <div class="container mt-4">
+        <h2>TTL Configurator</h2>
+        <p>Set the TTL value for your network interfaces.</p>
 
-<form method="post" action="%{action}">
-    <div class="form-group">
-        <label for="ttl_value">TTL Value:</label>
-        <input type="number" id="ttl_value" name="ttl_value" class="form-control" value="<%= ttl_value %>" min="1" max="255">
+        <form action="/cgi-bin/luci/admin/network/ttl-config" method="post">
+            <div class="form-group">
+                <label for="ttl_value">TTL Value:</label>
+                <select id="ttl_value" name="ttl_value" class="form-control" required>
+                    <option value="64" <% if ttl_value == "64" then %>selected<% end %>>64</option>
+                    <option value="128" <% if ttl_value == "128" then %>selected<% end %>>128</option>
+                    <option value="255" <% if ttl_value == "255" then %>selected<% end %>>255</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="iface">Select Interface:</label>
+                <select id="iface" name="iface" class="form-control">
+                    <option value="eth0" <% if iface == "eth0" then %>selected<% end %>>eth0</option>
+                    <option value="wlan0" <% if iface == "wlan0" then %>selected<% end %>>wlan0</option>
+                    <option value="br-lan" <% if iface == "br-lan" then %>selected<% end %>>br-lan</option>
+                    <!-- Add more interfaces as needed -->
+                </select>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">Apply TTL</button>
+            </div>
+        </form>
+
+        <% if error then %>
+            <div class="alert alert-danger mt-4">
+                <strong>Error:</strong> <% error %>
+            </div>
+        <% elseif success then %>
+            <div class="alert alert-success mt-4">
+                <strong>Success:</strong> TTL has been successfully applied.
+            </div>
+        <% end %>
     </div>
-    <button type="submit" class="btn btn-primary">Apply</button>
-</form>
-
-<%+footer%>
+ 
